@@ -441,6 +441,50 @@ export function WoundClinicWorkflow() {
             className="w-full h-24 p-3 border border-gray-200 rounded-lg resize-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
           />
         </div>
+
+        {/* Current Orders */}
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <ClipboardList className="w-5 h-5 text-indigo-500" />
+            Current Orders
+          </h3>
+          {selectedPatient.orders && selectedPatient.orders.length > 0 ? (
+            <div className="space-y-2">
+              {selectedPatient.orders.map(order => (
+                <div key={order.id} className="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    order.type === 'medication' ? 'bg-blue-100 text-blue-600' :
+                    order.type === 'supply' ? 'bg-green-100 text-green-600' :
+                    order.type === 'procedure' ? 'bg-purple-100 text-purple-600' :
+                    order.type === 'followup' ? 'bg-orange-100 text-orange-600' :
+                    'bg-gray-100 text-gray-600'
+                  }`}>
+                    {order.type === 'medication' && <Pill className="w-4 h-4" />}
+                    {order.type === 'supply' && <ClipboardList className="w-4 h-4" />}
+                    {order.type === 'procedure' && <Stethoscope className="w-4 h-4" />}
+                    {order.type === 'followup' && <Calendar className="w-4 h-4" />}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900">{order.name}</div>
+                    {order.details && <div className="text-sm text-gray-500">{order.details}</div>}
+                  </div>
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    order.status === 'signed' ? 'bg-green-100 text-green-700' :
+                    order.status === 'completed' ? 'bg-gray-100 text-gray-600' :
+                    'bg-yellow-100 text-yellow-700'
+                  }`}>
+                    {order.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-6 text-gray-400">
+              <ClipboardList className="w-8 h-8 mx-auto mb-2 opacity-50" />
+              <p className="text-sm">No orders yet</p>
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -495,6 +539,45 @@ export function WoundClinicWorkflow() {
         <div className="grid grid-cols-2 gap-6">
           {/* Left: Wound info */}
           <div className="space-y-4">
+            {/* Wound Image */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <Camera className="w-5 h-5 text-indigo-500" />
+                Wound Image
+              </h3>
+              {lastPhoto ? (
+                <div className="space-y-3">
+                  <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                    {/* Placeholder for actual wound image */}
+                    <div className="text-center p-4">
+                      <div className="w-full h-full bg-gradient-to-br from-red-200 via-pink-100 to-yellow-100 rounded-lg flex items-center justify-center min-h-[200px]">
+                        <div className="text-center">
+                          <Camera className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-500">Wound Photo</p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {lastPhoto.measurements?.length} x {lastPhoto.measurements?.width} cm
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">Captured today</span>
+                    <button className="text-indigo-600 hover:text-indigo-700 font-medium">
+                      View Full Size
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="aspect-square bg-gray-50 rounded-lg flex items-center justify-center">
+                  <div className="text-center text-gray-400">
+                    <Camera className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No image captured</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Wound measurements */}
             {lastPhoto?.measurements && (
               <div className="bg-white rounded-xl border border-gray-200 p-4">
